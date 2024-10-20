@@ -1,7 +1,6 @@
 package com.juniorjavaready.domain.Offer;
 
-import com.juniorjavaready.domain.Offer.dto.JobOfferDto;
-import com.juniorjavaready.infrastructure.http.JobOfferFetcher;
+import com.juniorjavaready.infrastructure.http.JobOffersFetcher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,6 +13,7 @@ public class JobOfferFacadeTest {
 
     private JobOfferRepositoryImplementation jobOfferRepositoryImplementation;
     private JobOfferFacade jobOfferFacade;
+    private JobOffersFetcher jobOfferFetcher;
     private WebClient webClient;
     private JobOfferRepository jobOfferRepository;
 
@@ -22,7 +22,9 @@ public class JobOfferFacadeTest {
     void setUp() {
         webClient = WebClient.create();
         jobOfferRepository = new JobOfferRepositoryImplementation();
-        jobOfferFacade = new JobOfferFacade(jobOfferRepository, new JobOfferFetcher(webClient));
+        jobOfferFacade = new JobOfferFacade(jobOfferRepository, new JobOffersFetcher(
+                jobOfferRepository,
+                WebClient.builder().build()));
         jobOfferRepository.clear();
     }
 
@@ -30,10 +32,10 @@ public class JobOfferFacadeTest {
     public void should_save_4_job_offers_if_database_is_empty() throws NoJobsFoundException, DuplicateKeyException {
         //given
         List<JobOffer> jobOffers = List.of(
-                new JobOffer(1,"NetCompany1", "Java developer1", "3000-4000 PLN", "http://netcompany1.pl"),
-                new JobOffer(2,"NetCompany2", "Java developer2", "3000-4000 PLN", "http://netcompany2.pl"),
-                new JobOffer(3,"NetCompany3", "Java developer3", "3000-4000 PLN", "http://netcompany3.pl"),
-                new JobOffer(4,"NetCompany5", "Java developer5", "3000-4000 PLN", "http://netcompany5.pl"));
+                new JobOffer(1, "NetCompany1", "Java developer1", "3000-4000 PLN", "http://netcompany1.pl"),
+                new JobOffer(2, "NetCompany2", "Java developer2", "3000-4000 PLN", "http://netcompany2.pl"),
+                new JobOffer(3, "NetCompany3", "Java developer3", "3000-4000 PLN", "http://netcompany3.pl"),
+                new JobOffer(4, "NetCompany5", "Java developer5", "3000-4000 PLN", "http://netcompany5.pl"));
         //when
         for (JobOffer jobOffer : jobOffers) {
             jobOfferFacade.save(jobOffer);

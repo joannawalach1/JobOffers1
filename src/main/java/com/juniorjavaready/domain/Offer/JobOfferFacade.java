@@ -1,7 +1,8 @@
 package com.juniorjavaready.domain.Offer;
 
 import com.juniorjavaready.domain.Offer.dto.JobOfferDto;
-import com.juniorjavaready.infrastructure.http.JobOfferFetcher;
+import com.juniorjavaready.infrastructure.http.JobOffersFetcher;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -9,9 +10,9 @@ import java.util.List;
 public class JobOfferFacade {
 
     private final JobOfferRepository jobOfferRepository;
-    private final JobOfferFetcher jobOfferFetcher;
+    private final JobOffersFetcher jobOfferFetcher;
 
-    public JobOfferFacade(JobOfferRepository jobOfferRepository, JobOfferFetcher jobOfferFetcher) {
+    public JobOfferFacade(JobOfferRepository jobOfferRepository, JobOffersFetcher jobOfferFetcher) {
         this.jobOfferRepository = jobOfferRepository;
         this.jobOfferFetcher = jobOfferFetcher;
     }
@@ -33,18 +34,18 @@ public class JobOfferFacade {
             throw new NoJobsFoundException("JobOffer cannot be null");
         }
 
-        List<JobOffer> savedOffers = jobOfferRepository.save(Collections.singletonList(jobOffer));
+//        if (jobOfferRepository.findByUrls(jobOffer.getOfferUrl())) {
+//            throw new DuplicateKeyException("JobOffer already exists");
+//        }
 
-        if (savedOffers.isEmpty() || savedOffers.get(0) == null) {
-            throw new RuntimeException("Failed to save JobOffer to the repository");
-        }
+        jobOfferRepository.save(Collections.singletonList(jobOffer));
 
-        return savedOffers.get(0);
+        return jobOffer;
     }
 
 
 
-    public List<JobOfferDto> fetchAllOffersAndSaveAllIfNoExists() throws NoJobsFoundException {
-        return jobOfferFetcher.fetchJobOffer();
+    public Mono<List<JobOfferDto>> fetchAllOffersAndSaveAllIfNoExists() throws NoJobsFoundException {
+        return jobOfferFetcher.fetchAllJobs();
     }
 }

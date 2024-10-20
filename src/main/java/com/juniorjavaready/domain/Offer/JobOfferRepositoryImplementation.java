@@ -1,9 +1,10 @@
 package com.juniorjavaready.domain.Offer;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
+@Repository
 public class JobOfferRepositoryImplementation implements JobOfferRepository{
     private List<JobOffer> jobOffers;
 

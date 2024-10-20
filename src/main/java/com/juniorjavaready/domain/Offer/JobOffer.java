@@ -9,11 +9,11 @@ import lombok.*;
 @EqualsAndHashCode
 public class JobOffer {
     private int id;
-    private String companyName;
-    private String position;
+    private String company;
+    private String title;
     private String salary;
     private String offerUrl;
 
-    public JobOffer(int id, String companyName, String position, String salary, String offerUrl) {
+    public JobOffer(int id, String company, String title, String salary, String offerUrl) {
     }
 }
