@@ -2,23 +2,26 @@ package com.juniorjavaready.domain.Offer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class JobOfferRepositoryImplementation implements JobOfferRepository{
-    private List<JobOffer> jobOffers = new ArrayList<>();
-    private final JobOfferRepository jobOfferRepository;
+    private List<JobOffer> jobOffers;
 
-    public JobOfferRepositoryImplementation(JobOfferRepository jobOfferRepository) {
-        this.jobOfferRepository = jobOfferRepository;
+    public JobOfferRepositoryImplementation() {
+        this.jobOffers = new ArrayList<>();
     }
 
     @Override
     public List<JobOffer> findAll() {
-        return jobOfferRepository.findAll();
+        return new ArrayList<>(jobOffers) ;
     }
 
     @Override
     public JobOffer findById(int id) {
-        return jobOfferRepository.findById(id);
+        return jobOffers.stream()
+                .filter(offer -> offer.getId() == id)
+                .findFirst()
+                .orElse(null);
     }
 
 
@@ -30,11 +33,19 @@ public class JobOfferRepositoryImplementation implements JobOfferRepository{
 
     @Override
     public int count() {
-        return jobOfferRepository.count();
+        return jobOffers.size();
     }
 
     @Override
     public void clear() {
-        jobOfferRepository.clear();
+        jobOffers.clear();
+    }
+
+    @Override
+    public JobOffer findByUrls(String offerUrl) {
+        return jobOffers.stream()
+                .filter(jobOffer -> jobOffer.getOfferUrl().equals(offerUrl))
+                .findFirst()
+                .orElse(null);
     }
 }

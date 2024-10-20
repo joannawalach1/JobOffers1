@@ -14,6 +14,6 @@ public class JobOffer {
     private String salary;
     private String offerUrl;
 
-    public JobOffer(String netCompany, String javaDeveloper, String s, String url) {
+    public JobOffer(int id, String companyName, String position, String salary, String offerUrl) {
     }
 }

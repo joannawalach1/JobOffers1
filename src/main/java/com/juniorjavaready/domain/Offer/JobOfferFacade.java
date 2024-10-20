@@ -3,6 +3,7 @@ package com.juniorjavaready.domain.Offer;
 import com.juniorjavaready.domain.Offer.dto.JobOfferDto;
 import com.juniorjavaready.infrastructure.http.JobOfferFetcher;
 
+import java.util.Collections;
 import java.util.List;
 
 public class JobOfferFacade {
@@ -23,18 +24,25 @@ public class JobOfferFacade {
         return jobOfferRepository.findById(id);
     }
 
-    public JobOfferDto save(JobOffer jobOffer) {
-        if (jobOffer == null) {
-            throw new IllegalArgumentException("JobOffer cannot be null");
-        }
-        JobOfferDto jobOfferDto = new JobOfferDto();
-        jobOfferDto.setId(jobOffer.getId());
-        jobOfferDto.setCompanyName(jobOffer.getCompanyName());
-        jobOfferDto.setPosition(jobOffer.getPosition());
-        jobOfferDto.setSalary(jobOffer.getSalary());
-        jobOfferDto.setOfferUrl(jobOffer.getOfferUrl());
-        return jobOfferDto;
+    public JobOffer findOfferByUrl(String url) {
+        return jobOfferRepository.findByUrls(url);
     }
+
+    public JobOffer save(JobOffer jobOffer) throws DuplicateKeyException, NoJobsFoundException {
+        if (jobOffer == null) {
+            throw new NoJobsFoundException("JobOffer cannot be null");
+        }
+
+        List<JobOffer> savedOffers = jobOfferRepository.save(Collections.singletonList(jobOffer));
+
+        if (savedOffers.isEmpty() || savedOffers.get(0) == null) {
+            throw new RuntimeException("Failed to save JobOffer to the repository");
+        }
+
+        return savedOffers.get(0);
+    }
+
+
 
     public List<JobOfferDto> fetchAllOffersAndSaveAllIfNoExists() throws NoJobsFoundException {
         return jobOfferFetcher.fetchJobOffer();

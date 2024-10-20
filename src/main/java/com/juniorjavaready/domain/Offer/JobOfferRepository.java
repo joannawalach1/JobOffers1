@@ -8,4 +8,5 @@ public interface JobOfferRepository {
     List<JobOffer> save(List<JobOffer> offersToSave);
     int count();
     void clear();
+    JobOffer findByUrls(String offerUrl);
 }
